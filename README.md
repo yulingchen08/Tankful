@@ -97,18 +97,28 @@ Everything except steps 3–5 is testable without an app target — `Tests/Tankf
 
 ## Install
 
-A bundle you build yourself is ad-hoc signed by `Scripts/build-app.sh` and is never marked as quarantined, so it just opens — Gatekeeper's right-click → **Open** step only applies to a bundle that arrived from the internet, such as a zip from a release.
+One command downloads the latest prebuilt app, installs it to /Applications, wires up the Claude bridge and launches it — no Swift, Xcode or git needed:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/yulingchen08/Tankful/main/Scripts/install.sh | zsh
+```
+
+The installer fetches the zip with curl, which never marks files as quarantined, so the ad-hoc-signed app opens without any Gatekeeper prompt. Re-run the same command any time to update. The one prerequisite is Apple's Command Line Tools (for python3); the installer detects their absence and walks you through it.
+
+### Build from source
+
+A bundle you build yourself is ad-hoc signed by `Scripts/build-app.sh` and is never marked as quarantined, so it just opens — Gatekeeper's right-click → **Open** step only applies to a bundle that arrived from the internet, such as a zip downloaded through a browser.
 
 ```sh
 git clone https://github.com/yulingchen08/Tankful.git
 cd Tankful
 Scripts/build-app.sh
-mv build/Tankful.app /Applications/   # move it before installing: the bridge path gets recorded
+mv .build/Tankful.app /Applications/   # move it before installing: the bridge path gets recorded
 open /Applications/Tankful.app
 Scripts/install-claude-bridge.sh   # wires up the Claude rate-limit bridge
 ```
 
-The installer prefers `/Applications/Tankful.app` and falls back to `build/Tankful.app`, so installing while the app still sits in `build/` records a path that breaks the next time you clean or move it.
+The installer prefers `/Applications/Tankful.app` and falls back to `.build/Tankful.app`, so installing while the app still sits in `.build/` records a path that breaks the next time you clean or move it.
 
 For development, run the app directly without building a bundle:
 
