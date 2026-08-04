@@ -1,0 +1,31 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+# Creating the release and uploading the zip needs a writable token; tags only
+# maintainers can push are the sole trigger, so this never runs for forks.
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      # Same Xcode as CI: the default 16.4 misses the `compiler(>=6.2)` branch in GlassBackground.
+      - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: '26.3'
+      - run: swift test
+      - run: Scripts/build-app.sh
+      # ditto preserves the bundle's resource forks and permissions, which zip(1) drops.
+      - run: ditto -c -k --keepParent .build/Tankful.app "${RUNNER_TEMP}/Tankful.zip"
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "Tankful ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            "${RUNNER_TEMP}/Tankful.zip"
