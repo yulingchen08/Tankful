@@ -1,0 +1,23 @@
+excluded:
+  - .build
+  - build
+
+nesting:
+  type_level: 2 # parsers use intentional 2-level-deep private Decodable envelope types
+
+# String(decoding:as:) is deliberate: lossy replacement of invalid bytes is wanted for
+# resilience when a chunk bisects a multibyte character (TailChunkReader).
+# The failable String(bytes:encoding:) initializer this rule prefers would return nil instead.
+disabled_rules:
+  - optional_data_string_conversion
+
+line_length:
+  warning: 130
+  error: 200
+  ignores_comments: true
+
+type_body_length:
+  warning: 350
+
+file_length:
+  warning: 500

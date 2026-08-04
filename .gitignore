@@ -1,0 +1,18 @@
+.build/
+.swiftpm/
+*.app
+.DS_Store
+xcuserdata/
+DerivedData/
+*.pem
+*.p12
+*.p8
+*.key
+*.mobileprovision
+.env*
+build/
+
+# Local agent/editor state that can carry machine-specific paths.
+.claude/settings.local.json
+.vscode/
+.idea/
