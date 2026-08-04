@@ -2,7 +2,7 @@
 
 A macOS menu-bar app that shows how much of your AI coding quota — Codex CLI and Claude Code CLI — you've used. 100% local, zero network.
 
-<!-- CI badge: add after first push -->
+[![CI](https://github.com/yulingchen08/Tankful/actions/workflows/ci.yml/badge.svg)](https://github.com/yulingchen08/Tankful/actions/workflows/ci.yml)
 
 ## What it does
 
@@ -93,7 +93,7 @@ Everything except steps 3–5 is testable without an app target — `Tests/Tankf
 A bundle you build yourself is ad-hoc signed by `Scripts/build-app.sh` and is never marked as quarantined, so it just opens — Gatekeeper's right-click → **Open** step only applies to a bundle that arrived from the internet, such as a zip from a release.
 
 ```sh
-git clone <this-repository-url>
+git clone https://github.com/yulingchen08/Tankful.git
 cd Tankful
 Scripts/build-app.sh
 mv build/Tankful.app /Applications/   # move it before installing: the bridge path gets recorded
