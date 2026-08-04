@@ -1,4 +1,6 @@
-# Tankful 📊
+<p align="center">
+  <img src="docs/banner.png" alt="Tankful — your Codex &amp; Claude Code quota, live in the menu bar" width="800">
+</p>
 
 A macOS menu-bar app that shows how much of your AI coding quota — Codex CLI and Claude Code CLI — you've used. 100% local, zero network.
 
