@@ -20,6 +20,19 @@ jobs:
           xcode-version: '26.3'
       - run: swift test
       - run: Scripts/build-app.sh
+      # Launching the packaged bundle catches what unit tests cannot: an app that only
+      # runs on the build machine. Hiding .build first matters — Bundle.module falls
+      # back to that absolute path, which masked exactly this failure in v0.3.0.
+      - name: Smoke test the bundle
+        run: |
+          ditto .build/Tankful.app "${RUNNER_TEMP}/smoke/Tankful.app"
+          mv .build "${RUNNER_TEMP}/hidden-build"
+          "${RUNNER_TEMP}/smoke/Tankful.app/Contents/MacOS/TankfulApp" &
+          APP_PID=$!
+          sleep 3
+          kill -0 "${APP_PID}"
+          kill "${APP_PID}"
+          mv "${RUNNER_TEMP}/hidden-build" .build
       # ditto preserves the bundle's resource forks and permissions, which zip(1) drops.
       - run: ditto -c -k --keepParent .build/Tankful.app "${RUNNER_TEMP}/Tankful.zip"
       - env:
