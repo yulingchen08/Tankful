@@ -1,0 +1,2 @@
+{"timestamp":"2026-06-30T11:00:00.000Z","type":"session_meta","payload":{"id":"99999999-8888-7777-6666-555555555555","cwd":"/tmp/example"}}
+{"timestamp":"2026-06-30T11:22:33.044Z","type":"event_msg","payload":{"type":"token_count","info":{"total_token_usage":{"input_tokens":7},"model_context_window":258400},"rate_limits":{"limit_id":"codex","limit_name":null,"primary":{"used_percent":13.0,"window_minutes":10080,"resets_at":1783398063},"secondary":null,"credits":null,"individual_limit":null,"plan_type":"team","rate_limit_reached_type":null}}}
