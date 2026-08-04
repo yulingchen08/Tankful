@@ -8,6 +8,13 @@ A macOS menu-bar app that shows how much of your AI coding quota — Codex CLI a
 
 Tankful reads the local files Codex CLI and Claude Code already write to disk and turns them into a menu-bar readout: official quota percentages and time until reset for both services. It never talks to a network, never touches Keychain or credentials, and never sends anything anywhere — everything happens in the process reading your own files.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshot-dark.png">
+    <img src="docs/screenshot-light.png" width="400" alt="Tankful panel showing Codex and Claude Code quota bars">
+  </picture>
+</p>
+
 ## The honesty principle
 
 Tankful shows only what it can verify.
