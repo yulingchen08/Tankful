@@ -1,0 +1,42 @@
+import AppKit
+import TankfulCore
+
+@MainActor
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var store: QuotaStore?
+    private var coordinator: RefreshCoordinator?
+    private var statusItemController: StatusItemController?
+    private var panelController: PanelController?
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        let env = Env.live
+        let store = QuotaStore(env: env)
+        let coordinator = RefreshCoordinator(store: store, env: env)
+        let panelController = PanelController(store: store)
+        let statusItemController = StatusItemController(store: store)
+
+        store.onRefreshRequested = { [weak coordinator] in coordinator?.refreshNow() }
+
+        panelController.statusItem = statusItemController.statusItem
+        statusItemController.onClick = { [weak panelController, weak coordinator] button in
+            guard let panelController else { return }
+            if panelController.isVisible {
+                panelController.hide()
+            } else {
+                coordinator?.refreshNow()
+                panelController.show(below: button)
+            }
+        }
+
+        self.store = store
+        self.coordinator = coordinator
+        self.panelController = panelController
+        self.statusItemController = statusItemController
+
+        coordinator.start()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        coordinator?.stop()
+    }
+}
