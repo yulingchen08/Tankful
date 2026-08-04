@@ -28,7 +28,7 @@ struct PanelView: View {
             Spacer()
             // PanelIcon is the tank artwork cut out from its tile; the full AppIcon square
             // reads as a dark blob at this size.
-            if let icon = Bundle.module.image(forResource: "PanelIcon") {
+            if let icon = Self.panelIcon {
                 Image(nsImage: icon)
                     .resizable()
                     .frame(width: 24, height: 24)
@@ -46,4 +46,15 @@ struct PanelView: View {
             ClaudeSectionView()
         }
     }
+
+    /// In the .app the PNG sits in Contents/Resources. Bundle.module only probes the
+    /// bundle root and the build machine's absolute .build path, so calling it first
+    /// would crash any bundle built on another machine; it stays as the fallback for
+    /// `swift run`, where the resource bundle does sit next to the executable.
+    private static let panelIcon: NSImage? = {
+        if let url = Bundle.main.url(forResource: "PanelIcon", withExtension: "png") {
+            return NSImage(contentsOf: url)
+        }
+        return Bundle.module.image(forResource: "PanelIcon")
+    }()
 }

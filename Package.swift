@@ -18,10 +18,10 @@ let package = Package(
             name: "TankfulApp",
             dependencies: ["TankfulCore"],
             path: "Sources/TankfulApp",
-            // Info.plist is consumed by Scripts/build-app.sh when assembling the bundle,
-            // not by SwiftPM.
-            exclude: ["Resources/Info.plist"],
-            resources: [.copy("Resources/AppIcon.png"), .copy("Resources/PanelIcon.png")]
+            // Info.plist and AppIcon.png are consumed by Scripts/build-app.sh when
+            // assembling the bundle, not by SwiftPM.
+            exclude: ["Resources/Info.plist", "Resources/AppIcon.png"],
+            resources: [.copy("Resources/PanelIcon.png")]
         ),
         .executableTarget(
             name: "TankfulBridge",
