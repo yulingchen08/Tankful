@@ -9,7 +9,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panelController: PanelController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        let env = Env.live
+        ProbeMode.applyAppearance()
+        let env = ProbeMode.probeHome.map {
+            Env(now: { Date() }, homeDirectory: URL(fileURLWithPath: $0))
+        } ?? Env.live
         let store = QuotaStore(env: env)
         let coordinator = RefreshCoordinator(store: store, env: env)
         let panelController = PanelController(store: store)
@@ -34,6 +37,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.statusItemController = statusItemController
 
         coordinator.start()
+
+        if let probeHome = ProbeMode.probeHome {
+            ProbeMode.run(
+                panelController: panelController,
+                statusItemController: statusItemController,
+                probeHome: probeHome
+            )
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
