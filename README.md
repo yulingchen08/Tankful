@@ -134,10 +134,6 @@ No. The bridge chains to whatever command was configured before it, replaying th
 
 Tankful is an independent, unofficial project. It is not affiliated with, endorsed by, or sponsored by Anthropic or OpenAI. "Claude," "Claude Code," "Codex," and related names are used only to describe the tools Tankful reads data from (nominative use). No brand logos are shipped — the UI uses only Apple's SF Symbols.
 
-## Acknowledgements
-
-Inspired by [GlassQuota](https://github.com/chen10191200-hue/GlassQuota) (MIT) — an independent from-scratch implementation.
-
 ## License
 
 MIT — see [LICENSE](LICENSE).
