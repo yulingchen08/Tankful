@@ -50,7 +50,7 @@ find_bridge() {
     local candidate
     for candidate in \
         "/Applications/Tankful.app/Contents/MacOS/TankfulBridge" \
-        "${REPO_ROOT}/build/Tankful.app/Contents/MacOS/TankfulBridge"
+        "${REPO_ROOT}/.build/Tankful.app/Contents/MacOS/TankfulBridge"
     do
         if [[ -x "$candidate" ]]; then
             print -r -- "${candidate:A}"

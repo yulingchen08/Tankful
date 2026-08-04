@@ -3,7 +3,7 @@ set -euo pipefail
 
 cd "${0:A:h}/.."
 
-APP_BIN="build/Tankful.app/Contents/MacOS/TankfulApp"
+APP_BIN=".build/Tankful.app/Contents/MacOS/TankfulApp"
 OUT_DIR="docs"
 
 Scripts/build-app.sh
