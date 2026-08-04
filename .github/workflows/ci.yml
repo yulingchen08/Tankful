@@ -1,0 +1,48 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request: {}
+# CI only reads the checkout; a fork PR should never get a writable token.
+permissions:
+  contents: read
+# A newer push to the same branch or PR makes the run already in progress pointless, and fork
+# PRs are the ones that queue up behind each other.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # Nothing here pushes, so the checkout token has no reason to stay in .git/config.
+          persist-credentials: false
+      # The runner's default Xcode is 16.4, whose compiler misses the `compiler(>=6.2)` branch in
+      # GlassBackground. Selecting 26.3 keeps CI on the same branch developers build.
+      - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: '26.3'
+      - run: swift --version
+      - run: swift build -v
+      - run: swift test -v
+  lint:
+    runs-on: macos-15
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      # The preinstalled SwiftLint moves with the runner image, and under --strict a new rule
+      # turns green into red with no code change. Installing a fixed version keeps that upgrade
+      # a deliberate edit to this file.
+      - run: |
+          curl -fsSL -o "${RUNNER_TEMP}/swiftlint.zip" \
+            https://github.com/realm/SwiftLint/releases/download/0.62.2/portable_swiftlint.zip
+          unzip -q "${RUNNER_TEMP}/swiftlint.zip" -d "${RUNNER_TEMP}/swiftlint"
+          echo "${RUNNER_TEMP}/swiftlint" >> "${GITHUB_PATH}"
+      - run: swiftlint version
+      # No path arguments: Package.swift is linted too, which is where the first
+      # violations landed.
+      - run: swiftlint lint --strict --quiet
