@@ -5,6 +5,10 @@
 A macOS menu-bar app that shows how much of your AI coding quota — Codex CLI and Claude Code CLI — you've used. 100% local, zero network.
 
 [![CI](https://github.com/yulingchen08/Tankful/actions/workflows/ci.yml/badge.svg)](https://github.com/yulingchen08/Tankful/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/yulingchen08/Tankful)](https://github.com/yulingchen08/Tankful/releases/latest)
+[![macOS 15+](https://img.shields.io/badge/macOS-15%2B-blue)](https://github.com/yulingchen08/Tankful#requirements)
+[![Swift 6](https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white)](Package.swift)
+[![License: MIT](https://img.shields.io/github/license/yulingchen08/Tankful)](LICENSE)
 
 ## What it does
 
