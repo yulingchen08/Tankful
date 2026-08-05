@@ -20,9 +20,10 @@ mkdir -p "${APP_DIR}/Contents/MacOS" "${APP_DIR}/Contents/Resources"
 cp "${BIN_PATH}/${PRODUCT}" "${APP_DIR}/Contents/MacOS/${PRODUCT}"
 cp "${BIN_PATH}/${BRIDGE}" "${APP_DIR}/Contents/MacOS/${BRIDGE}"
 cp "Sources/${PRODUCT}/Resources/Info.plist" "${APP_DIR}/Contents/Info.plist"
-# The panel loads this through Bundle.main; the SwiftPM resource bundle is useless in a
+# The app loads these through Bundle.main; the SwiftPM resource bundle is useless in a
 # bundle built elsewhere because its accessor hardcodes the build machine's .build path.
 cp "Sources/${PRODUCT}/Resources/PanelIcon.png" "${APP_DIR}/Contents/Resources/"
+cp "Sources/${PRODUCT}/Resources/MenuIcon.png" "${APP_DIR}/Contents/Resources/"
 
 # Finder and the Dock read the icon from an icns, generated here from the master PNG
 # so the repo carries a single icon source.

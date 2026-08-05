@@ -18,9 +18,7 @@ final class StatusItemController: NSObject {
         super.init()
 
         if let button = statusItem.button {
-            let image = NSImage(systemSymbolName: "gauge.with.needle", accessibilityDescription: "Tankful")
-            image?.isTemplate = true
-            button.image = image
+            button.image = Self.menuBarIcon()
             button.imagePosition = .imageOnly
             button.target = self
             button.action = #selector(handleClick)
@@ -32,6 +30,27 @@ final class StatusItemController: NSObject {
 
     @objc private func handleClick() {
         onClick(statusItem.button)
+    }
+
+    /// Template line-art version of the app icon. Loaded from Contents/Resources in the
+    /// .app, from the SwiftPM bundle under `swift run`; the SF Symbol covers a bundle
+    /// assembled without the resource.
+    private static func menuBarIcon() -> NSImage? {
+        let icon: NSImage?
+        if let url = Bundle.main.url(forResource: "MenuIcon", withExtension: "png") {
+            icon = NSImage(contentsOf: url)
+        } else {
+            icon = Bundle.module.image(forResource: "MenuIcon")
+        }
+        guard let icon else {
+            let symbol = NSImage(systemSymbolName: "gauge.with.needle", accessibilityDescription: "Tankful")
+            symbol?.isTemplate = true
+            return symbol
+        }
+        icon.size = NSSize(width: 18, height: 18)
+        icon.isTemplate = true
+        icon.accessibilityDescription = "Tankful"
+        return icon
     }
 
     /// `withObservationTracking` fires once, so it re-registers itself after every change.

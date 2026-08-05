@@ -21,7 +21,7 @@ let package = Package(
             // Info.plist and AppIcon.png are consumed by Scripts/build-app.sh when
             // assembling the bundle, not by SwiftPM.
             exclude: ["Resources/Info.plist", "Resources/AppIcon.png"],
-            resources: [.copy("Resources/PanelIcon.png")]
+            resources: [.copy("Resources/PanelIcon.png"), .copy("Resources/MenuIcon.png")]
         ),
         .executableTarget(
             name: "TankfulBridge",
