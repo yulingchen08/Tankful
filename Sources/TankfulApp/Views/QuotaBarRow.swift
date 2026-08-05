@@ -38,10 +38,23 @@ struct QuotaBarRow: View {
     private var tint: Color { UsageLevel(usedPercent: displayPercent).tint }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            headline
-            track
-            caption
+        // An elapsed window has no number worth a bar; one label plus the note says it all.
+        if item.hasElapsed {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.label)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.secondary)
+                Text(item.elapsedNote)
+                    .font(.footnote)
+                    .italic()
+                    .foregroundStyle(.secondary)
+            }
+        } else {
+            VStack(alignment: .leading, spacing: 5) {
+                headline
+                track
+                caption
+            }
         }
     }
 
@@ -51,10 +64,10 @@ struct QuotaBarRow: View {
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(.secondary)
             Spacer(minLength: 0)
-            // An elapsed window's percentage describes a window that no longer exists.
-            Text(item.hasElapsed ? "—" : "\(Int(displayPercent))%")
+            Text("\(Int(displayPercent))%")
                 .font(.system(size: 20, weight: .semibold, design: .rounded).monospacedDigit())
-                .foregroundStyle(item.hasElapsed ? Color.secondary : .primary)
+                // At critical the number joins the bar in red; anything subtler is missable.
+                .foregroundStyle(UsageLevel(usedPercent: displayPercent) == .critical ? Color.red : .primary)
         }
     }
 
@@ -66,7 +79,6 @@ struct QuotaBarRow: View {
             }
         }
         .frame(height: Self.trackHeight)
-        .opacity(item.hasElapsed ? 0.45 : 1)
     }
 
     /// Sampled from the reference: the track is translucent white laid on the card's glass, not a
@@ -86,7 +98,7 @@ struct QuotaBarRow: View {
     @ViewBuilder
     private func fill(availableWidth: CGFloat) -> some View {
         let fraction = min(max(item.usedPercent / 100, 0), 1)
-        if !item.hasElapsed, fraction > 0 {
+        if fraction > 0 {
             Capsule()
                 .fill(
                     // The reference runs near-white at the leading edge into saturated colour at the
@@ -126,12 +138,7 @@ struct QuotaBarRow: View {
 
     @ViewBuilder
     private var caption: some View {
-        if item.hasElapsed {
-            Text(item.elapsedNote)
-                .font(.footnote)
-                .italic()
-                .foregroundStyle(.secondary)
-        } else if let resetsAt = item.resetsAt {
+        if let resetsAt = item.resetsAt {
             Text("resets in \(CountdownFormat.text(from: now, to: resetsAt))")
                 .font(.footnote)
                 .foregroundStyle(.secondary)

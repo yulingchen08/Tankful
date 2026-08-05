@@ -39,8 +39,8 @@ struct SectionHeader: View {
     private var dotDescription: String {
         switch freshness {
         case .fresh: "up to date"
-        case .stale: "last seen a while ago"
-        case .unavailable: "no data"
+        case .stale(let age): "as of \(WindowFormat.relative(age: age))"
+        case .unavailable(let reason): reason
         }
     }
 }
