@@ -20,6 +20,14 @@ while (( $# > 0 )); do
     esac
 done
 
+# Both executables target macOS 15+; proceeding on an older system would wire a
+# bridge into settings.json that cannot even launch.
+OS_VERSION="$(sw_vers -productVersion)"
+if (( ${OS_VERSION%%.*} < 15 )); then
+    print -u2 "Tankful needs macOS 15 or newer; this Mac is on ${OS_VERSION}."
+    exit 1
+fi
+
 # The bridge installer runs on the python3 that ships with Apple's Command Line
 # Tools; without them /usr/bin/python3 is only a stub that pops an install dialog.
 if ! xcode-select -p > /dev/null 2>&1; then
