@@ -24,11 +24,19 @@ struct PanelView: View {
 
     private var header: some View {
         HStack {
-            Text("Tankful")
-                .font(.system(size: 10, weight: .semibold))
-                .textCase(.uppercase)
-                .tracking(1.4)
-                .foregroundStyle(.secondary)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text("Tankful")
+                    .font(.system(size: 10, weight: .semibold))
+                    .textCase(.uppercase)
+                    .tracking(1.4)
+                    .foregroundStyle(.secondary)
+                // Absent under swift run, where there is no bundle to read a version from.
+                if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                    Text("v\(version)")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.tertiary)
+                }
+            }
             Spacer()
             // PanelIcon is the tank artwork cut out from its tile; the full AppIcon square
             // reads as a dark blob at this size.
