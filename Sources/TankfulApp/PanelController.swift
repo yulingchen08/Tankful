@@ -13,8 +13,10 @@ final class PanelController {
     /// outside-click dismissal, otherwise the panel closes and reopens on every toggle.
     weak var statusItem: NSStatusItem?
 
-    init(store: QuotaStore) {
-        hostingController = NSHostingController(rootView: AnyView(PanelView().environment(store)))
+    init(store: QuotaStore, updateChecker: UpdateChecker) {
+        hostingController = NSHostingController(
+            rootView: AnyView(PanelView().environment(store).environment(updateChecker))
+        )
         hostingController.sizingOptions = [.preferredContentSize]
 
         panel = NSPanel(

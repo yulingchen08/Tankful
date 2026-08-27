@@ -14,7 +14,11 @@ struct PanelView: View {
         VStack(alignment: .leading, spacing: 16) {
             header
             sections
-            FooterView()
+            VStack(alignment: .leading, spacing: 8) {
+                UpdateHintRow()
+                LaunchAtLoginToggle()
+                FooterView()
+            }
         }
     }
 

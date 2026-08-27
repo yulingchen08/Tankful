@@ -2,7 +2,7 @@
   <img src="docs/banner.png" alt="Tankful — your Codex &amp; Claude Code quota, live in the menu bar" width="800">
 </p>
 
-A macOS menu-bar app that shows how much of your AI coding quota — Codex CLI and Claude Code CLI — you've used. 100% local, zero network.
+A macOS menu-bar app that shows how much of your AI coding quota — Codex CLI and Claude Code CLI — you've used. 100% local: your usage data never leaves your machine.
 
 [![CI](https://github.com/yulingchen08/Tankful/actions/workflows/ci.yml/badge.svg)](https://github.com/yulingchen08/Tankful/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/yulingchen08/Tankful)](https://github.com/yulingchen08/Tankful/releases/latest)
@@ -12,7 +12,7 @@ A macOS menu-bar app that shows how much of your AI coding quota — Codex CLI a
 
 ## What it does
 
-Tankful reads the local files Codex CLI and Claude Code already write to disk and turns them into a menu-bar readout: official quota percentages and time until reset for both services. It never talks to a network, never touches Keychain or credentials, and never sends anything anywhere — everything happens in the process reading your own files.
+Tankful reads the local files Codex CLI and Claude Code already write to disk and turns them into a menu-bar readout: official quota percentages and time until reset for both services. It never touches Keychain or credentials, and nothing about you or your usage is ever sent anywhere — everything happens in the process reading your own files. The one network request it makes is an anonymous version check against this repository's releases when the panel opens (at most every six hours), detailed in the privacy table below.
 
 <p align="center">
   <picture>
@@ -68,6 +68,7 @@ Tankful shows only what it can verify.
 | `~/.claude.json` | One field: `oauthAccount.organizationType` (plan tier) | Read-only | None |
 | `~/.claude/settings.json` | Edited **once**, by the installer only — one key (`statusLine.command`), with a timestamped backup written first. The app itself never opens this file. | Write (installer only) | None |
 | `~/Library/Application Support/Tankful/claude-rate-limits.json` | Written by the bridge executable on every statusline render; contains only used-percentages and reset timestamps for each window — no message content, ever. Mode `0600`. | Read (app) / Write (bridge) | None |
+| `api.github.com` (update check) | Anonymous GET for this repository's latest release tag, when the panel opens and at most every six hours. The request carries no account data, no usage data, no identifiers — it is the same query as opening the releases page in a browser. | — | Outbound HTTPS to GitHub only |
 
 Transcripts under `~/.claude/projects` are **not read at all** — Tankful no longer looks at conversation content in any form. The app process itself writes nothing and makes no network requests of any kind.
 
@@ -85,11 +86,13 @@ Claude Code's own statusline API. Since v2.1.80 it hands every statusline comman
 Either there's no Claude Code session currently running a statusline, or the current session hasn't gotten its first API response yet. The bridge only sees data when Claude Code hands it some. Claude numbers also require a Pro or Max plan (free-tier accounts get no `rate_limits` field) and Claude Code v2.1.80+.
 
 **Does anything leave my machine?**
-No. There's no networking code anywhere in this app, including the bridge — confirm it yourself:
+Nothing about you or your usage, ever. The only networking code in the entire codebase is the update check — one anonymous GET to `api.github.com` asking for the latest release tag. Confirm it yourself:
 
 ```sh
 grep -rn "URLSession\|import Network\|Keychain" Sources/
 ```
+
+The only match is `Sources/TankfulApp/UpdateChecker.swift`. The bridge helper has no networking code at all.
 
 **Is Tankful on the Mac App Store?**
 No. It reads dotfiles outside the App Sandbox's reach (`~/.codex`, `~/.claude`), so it isn't sandboxed and isn't Store-eligible. Build it from source instead.

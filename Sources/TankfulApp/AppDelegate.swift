@@ -15,7 +15,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } ?? Env.live
         let store = QuotaStore(env: env)
         let coordinator = RefreshCoordinator(store: store, env: env)
-        let panelController = PanelController(store: store)
+        let updateChecker = UpdateChecker()
+        let panelController = PanelController(store: store, updateChecker: updateChecker)
         let statusItemController = StatusItemController(store: store)
 
         store.onRefreshRequested = { [weak coordinator] in coordinator?.refreshNow() }
@@ -27,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 panelController.hide()
             } else {
                 coordinator?.refreshNow()
+                updateChecker.checkIfDue()
                 panelController.show(below: button)
             }
         }
@@ -39,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         coordinator.start()
 
         if let probeHome = ProbeMode.probeHome {
+            updateChecker.checkIfDue()
             ProbeMode.run(
                 panelController: panelController,
                 statusItemController: statusItemController,

@@ -6,15 +6,15 @@ Only the latest release is supported. Please upgrade before reporting an issue.
 
 ## Scope
 
-Tankful is local-only by design: it makes zero network requests, of any kind, from the app or from the bundled `TankfulBridge` helper. This is auditable directly:
+Tankful is local-first by design: no user data, usage data, or identifier ever leaves the machine. The app makes exactly one kind of network request — an anonymous GET to `api.github.com` for the latest release tag (the update hint), when the panel opens and at most every six hours. The bundled `TankfulBridge` helper makes no network requests of any kind. This is auditable directly:
 
 ```sh
 grep -rn "URLSession\|import Network\|Keychain" Sources/
 ```
 
-That command should return nothing. If it ever returns a match, that's a regression worth reporting.
+The only match should be `Sources/TankfulApp/UpdateChecker.swift`. Any other match is a regression worth reporting.
 
-The app process itself only **reads**: Codex's session logs, Claude's plan-tier field, and the one snapshot file the bridge writes. It never writes to disk.
+The app process itself only **reads**: Codex's session logs, Claude's plan-tier field, and the one snapshot file the bridge writes. It writes nothing to disk (the screenshot tooling's probe mode, active only under the `TANKFUL_PROBE_HOME` environment variable, writes one coordinates file into the fake home it is pointed at).
 
 The bridge helper (`TankfulBridge`) is the one piece of Tankful that writes anything, and it writes exactly one file: `~/Library/Application Support/Tankful/claude-rate-limits.json`, created with mode `0600`, containing only per-window used-percentages and reset timestamps. It edits nothing else on disk.
 
@@ -24,7 +24,7 @@ The installer (`Scripts/install-claude-bridge.sh`) is the only thing that modifi
 
 - **Keychain or any stored credential** — it never authenticates as you and never needs to.
 - **Transcript content** — `~/.claude/projects` is not read at all. Nothing in Tankful parses conversation, prompt, or completion text; the only Claude-side data captured is the official `rate_limits` percentages and reset times Claude Code already hands to its statusline command.
-- **The network** — no outbound connection of any kind, to any host, from either the app or the bridge helper.
+- **The network, beyond the version check** — no other outbound connection of any kind, to any host, from either the app or the bridge helper; and the version check itself carries nothing but the request for a tag name.
 
 ## Reporting a vulnerability
 
