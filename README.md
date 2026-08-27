@@ -70,7 +70,7 @@ Tankful shows only what it can verify.
 | `~/Library/Application Support/Tankful/claude-rate-limits.json` | Written by the bridge executable on every statusline render; contains only used-percentages and reset timestamps for each window — no message content, ever. Mode `0600`. | Read (app) / Write (bridge) | None |
 | `api.github.com` (update check) | Anonymous GET for this repository's latest release tag, when the panel opens and at most every six hours. The request carries no account data, no usage data, no identifiers — it is the same query as opening the releases page in a browser. | — | Outbound HTTPS to GitHub only |
 
-Transcripts under `~/.claude/projects` are **not read at all** — Tankful no longer looks at conversation content in any form. The app process itself writes nothing and makes no network requests of any kind.
+Transcripts under `~/.claude/projects` are **not read at all** — Tankful no longer looks at conversation content in any form. The app process itself writes nothing, and its only network request is the anonymous version check in the table above — none of your data rides along, ever.
 
 ## Requirements
 
