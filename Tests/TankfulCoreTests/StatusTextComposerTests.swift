@@ -56,6 +56,14 @@ import Testing
         #expect(text == "C 95% opus")
     }
 
+    /// A future versioned model id must read as words, not underscores.
+    @Test func multiWordExtraWindowIDReadsAsWords() {
+        let text = compose(
+            claudeExtraWindows: [ExtraWindow(id: "seven_day_fable_5", usedPercent: 96, resetsAt: future)]
+        )
+        #expect(text == "C 96% fable 5")
+    }
+
     @Test func extraWindowBeatsCodexToo() {
         let text = compose(
             codexWindows: [RateWindow(kind: .fiveHour, usedPercent: 50, resetsAt: future)],

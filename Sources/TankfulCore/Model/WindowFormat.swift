@@ -41,10 +41,13 @@ public enum UsageLevel: Sendable, Equatable {
 /// Presentation helpers for the panel, kept in Core so they can be tested without an app target.
 public enum WindowFormat {
     /// Claude names its extra windows `seven_day_opus`, `seven_day_sonnet`, …. An id that does
-    /// not fit that shape is shown verbatim rather than guessed at.
+    /// not fit that shape is shown verbatim rather than guessed at. Multi-word ids read as
+    /// words: `seven_day_fable_5` → `7d · Fable 5`.
     public static func extraWindowLabel(id: String) -> String {
         guard let model = ClaudeExtraWindowID.model(in: id) else { return id }
-        return model.isEmpty ? "7d" : "7d · \(model.capitalized)"
+        guard !model.isEmpty else { return "7d" }
+        let name = model.split(separator: "_").map { String($0).capitalized }.joined(separator: " ")
+        return "7d · \(name)"
     }
 
     /// Nil when the numbers are current and need no caveat under them.

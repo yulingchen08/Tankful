@@ -42,6 +42,7 @@ import Testing
 
     @Test func extraWindowLabels() {
         #expect(WindowFormat.extraWindowLabel(id: "seven_day_opus") == "7d · Opus")
+        #expect(WindowFormat.extraWindowLabel(id: "seven_day_fable_5") == "7d · Fable 5")
         #expect(WindowFormat.extraWindowLabel(id: "seven_day") == "7d")
         #expect(WindowFormat.extraWindowLabel(id: "something_else") == "something_else")
         #expect(WindowFormat.extraWindowLabel(id: "") == "")

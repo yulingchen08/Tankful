@@ -65,7 +65,7 @@ public enum StatusTextComposer {
     /// shape, which keeps an unreadable id out of the menu bar.
     private static func compactExtraLabel(id: String) -> String? {
         guard let model = ClaudeExtraWindowID.model(in: id) else { return nil }
-        return model.isEmpty ? "wk" : model
+        return model.isEmpty ? "wk" : model.replacingOccurrences(of: "_", with: " ")
     }
 }
 
